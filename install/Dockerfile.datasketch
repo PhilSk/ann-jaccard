@@ -1,0 +1,6 @@
+FROM ann-benchmarks
+
+RUN pip3 install datasketch
+RUN python3 -c 'import datasketch'
+RUN pip3 install annoy
+RUN python3 -c 'import annoy'

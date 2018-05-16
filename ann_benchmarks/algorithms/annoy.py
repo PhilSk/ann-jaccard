@@ -1,0 +1,32 @@
+from __future__ import absolute_import
+import annoy
+from ann_benchmarks.algorithms.base import BaseANN
+import numpy
+from datasketch import MinHash
+
+from ann_benchmarks.distance import metrics
+
+
+class Annoy(BaseANN):
+    def __init__(self, metric, n_trees, search_k):
+        self._n_trees = n_trees
+        self._search_k = search_k
+        self._metric = metric
+        self.name = 'Annoy(n_trees=%d, search_k=%d)' % (self._n_trees,
+                                                        self._search_k)
+
+    def fit(self, X):
+        self._annoy = annoy.AnnoyIndex(X.shape[1])
+        for i, x in enumerate(X):
+            self._annoy.add_item(i, x.tolist())
+        self._annoy.build(self._n_trees)
+        self._X = X
+
+    def query(self, v, n):
+        # for idx in self._annoy.get_nns_by_vector(v.tolist(), n,
+        #                                          self._search_k):
+        #     print(v)
+        #     print(self._X[idx])
+        #     print(metrics['jaccard']['distance'](v, self._X[idx]))
+        # print('//////////////////////////')
+        return self._annoy.get_nns_by_vector(v.tolist(), n, self._search_k)
